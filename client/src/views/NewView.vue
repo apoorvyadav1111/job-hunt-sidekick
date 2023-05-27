@@ -10,22 +10,16 @@
                 <v-col>
                     <v-combobox
                         v-model="company"
-                        :error-messages="companErrors"
                         :items="companyItems"
                         label="Company Name"
                         required
-                        @input="$v.company.$touch()"
-                        @blur="$v.company.$touch()"
                     ></v-combobox>
                 </v-col>
                 <v-col>
                     <v-text-field
                         v-model="postingId"
-                        :error-messages="postingIdErrors"
                         label="Job ID"
                         required
-                        @input="$v.postingId.$touch()"
-                        @blur="$v.postingId.$touch()"
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -34,18 +28,15 @@
                     <v-text-field
                     v-model="jobUrl"
                     label="Job Posting Url"
-                    @input="$v.referral.$touch()"
-                    @blur="$v.referral.$touch()"
+                    required
                     ></v-text-field>
                 </v-col>
             </v-row>
             <v-row>
                 <v-col>
                     <v-text-field
-                        v-model="dashboardURL"
+                        v-model="dashboardUrl"
                         label="Dashboard URL"
-                        @input="$v.referral.$touch()"
-                        @blur="$v.referral.$touch()"
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -54,37 +45,31 @@
                     <v-combobox
                         v-model="stack"
                         :items="stackItems"
-                        :error-messages="stackErrors"
                         label="Stack"
                         required
-                        @change="$v.stack.$touch()"
-                        @blur="$v.stack.$touch()"
                     ></v-combobox>
                 </v-col>
                 <v-col>
                     <v-text-field
                         v-model="referral"
-                        :error-messages="referralErrors"
                         label="Referral"
                         required
-                        @input="$v.referral.$touch()"
-                        @blur="$v.referral.$touch()"
                     ></v-text-field>
                 </v-col>
             </v-row>
 
 
             <v-text-field
-                v-model="recuiter"
+                v-model="recruiter"
                 label="Recuiter Details"
-                @input="$v.referral.$touch()"
-                @blur="$v.referral.$touch()"
             ></v-text-field>
             <v-textarea
                 outlined
+                auto-grow
+                rows="1"
                 v-model="note"
                 name="Note"
-                label="Note"
+                label="Additional Note"
             ></v-textarea>
             <v-btn
                 class="mr-4"
@@ -96,22 +81,82 @@
             clear
             </v-btn>
     </form>
-
     </v-card>
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import { validationMixin } from 'vuelidate'
+import { JobApplicationInfo, Status, StatusLog, Task } from "@/interfaces/jobapplication";
 
 export default Vue.extend({
     name:'NewView',
     components:{},
+    data(){
+        let company = "";
+        let stack = "";
+        let postingId = "";
+        let jobUrl = "";
+        let dashboardUrl = "";
+        let referral = "";
+        let note = "";
+        let recruiter = "";
+        let companyItems:string[] = [];
+        let stackItems:string[] = [];
+        return {
+            company,
+            stack,
+            postingId,
+            jobUrl,
+            dashboardUrl,
+            referral,
+            note,
+            recruiter,
+            companyItems,
+            stackItems,
+        }
+    },
+    async created(){
+        return
+    },
     methods:{
         submit(){
-            return
+            const st:StatusLog = {
+                status:'APPLIED',
+                review:'Applied job on the website',
+                updated: new Date()
+            }
+            let app:JobApplicationInfo = {
+                company: this.company,
+                stack:this.stack,
+                postingId:this.postingId,
+                referral: this.referral,
+                note: this.note,
+                recruiter:this.recruiter,
+                status:[st],
+                pending: [],
+            }
+
+            try{
+                app.postingUrl = new URL(this.jobUrl)
+            }catch{
+                app.postingUrl = undefined;
+            }
+
+            try{
+                app.dashboardUrl = new URL(this.dashboardUrl)
+            }catch{
+                app.dashboardUrl = undefined;
+            }
+            console.log(app);
         },
         clear(){
-            return
+            this.company = "";
+            this.stack = "";
+            this.postingId = "";
+            this.jobUrl = "";
+            this.dashboardUrl = "";
+            this.referral = "";
+            this.note = "";
+            this.recruiter = "";
         }
 
     }
