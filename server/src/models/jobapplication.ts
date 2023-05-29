@@ -14,10 +14,10 @@ const jobApplicationSchema = new Schema(
             type: String
         }, 
         'postingUrl' : {
-            type: URL
+            type: String
         },
         'dashboardUrl' : {
-            type: URL
+            type: String
         },
         'referral' :{
             type: String
@@ -47,4 +47,4 @@ const jobApplicationSchema = new Schema(
 
 jobApplicationSchema.index({ applicationId: 1});
 
-module.exports = mongoose.model('Comments', jobApplicationSchema);
+module.exports = mongoose.model('JobApplication', jobApplicationSchema);

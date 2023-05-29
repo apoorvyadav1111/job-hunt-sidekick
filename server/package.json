@@ -5,12 +5,14 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon ./dist/app.js",
+    "watch": "tsc --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Apoorv Yadav",
   "license": "MIT",
   "dependencies": {
     "connect-mongodb-session": "^3.1.1",
+    "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
