@@ -34,8 +34,8 @@ export interface JobApplicationInfo{
   company: string,
   postingId?: string,
   stack?:string,
-  postingUrl?: URL,
-  dashboardUrl?: URL
+  postingUrl?: URL | string,
+  dashboardUrl?: URL | string
   referral?: string,
   note?: string,
   recruiter?: string,

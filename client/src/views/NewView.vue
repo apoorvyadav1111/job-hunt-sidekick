@@ -6,6 +6,10 @@
             </div>
         </v-card-text>
         <form>
+            <v-alert
+            v-if="message">
+            {{ alert }}
+            </v-alert>
             <v-row>
                 <v-col>
                     <v-combobox
@@ -86,21 +90,25 @@
 <script lang="ts">
 import Vue from 'vue';
 import { JobApplicationInfo, Status, StatusLog, Task } from "@/interfaces/jobapplication";
+import { JobApplicationService } from '@/services/jobapplication_service';
+import { DDLService } from '@/services/ddl';
 
 export default Vue.extend({
     name:'NewView',
     components:{},
     data(){
-        let company = "";
-        let stack = "";
-        let postingId = "";
-        let jobUrl = "";
-        let dashboardUrl = "";
+        let company = "TCS";
+        let stack = "SDE";
+        let postingId = "R1234";
+        let jobUrl = "google.com";
+        let dashboardUrl = "google.com";
         let referral = "";
         let note = "";
         let recruiter = "";
         let companyItems:string[] = [];
         let stackItems:string[] = [];
+        let message = false;
+        let alert = "";
         return {
             company,
             stack,
@@ -112,10 +120,14 @@ export default Vue.extend({
             recruiter,
             companyItems,
             stackItems,
+            message,
+            alert
         }
     },
     async created(){
-        return
+        const ddlServ = new DDLService();
+        this.companyItems = await ddlServ.getCompanyDDL();
+        this.stackItems = await ddlServ.getStackDDL();
     },
     methods:{
         submit(){
@@ -138,15 +150,15 @@ export default Vue.extend({
             try{
                 app.postingUrl = new URL(this.jobUrl)
             }catch{
-                app.postingUrl = undefined;
+                app.postingUrl = this.jobUrl;
             }
 
             try{
                 app.dashboardUrl = new URL(this.dashboardUrl)
             }catch{
-                app.dashboardUrl = undefined;
+                app.dashboardUrl = this.dashboardUrl;
             }
-            console.log(app);
+            this.createNewJobAppplication(app);
         },
         clear(){
             this.company = "";
@@ -157,6 +169,12 @@ export default Vue.extend({
             this.referral = "";
             this.note = "";
             this.recruiter = "";
+        },
+        async createNewJobAppplication(formData:JobApplicationInfo){
+            const resp = await new JobApplicationService().postApplication(formData);
+            this.message = true;
+            this.alert = resp;
+            
         }
 
     }

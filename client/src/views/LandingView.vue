@@ -17,12 +17,9 @@
         <NewView />
       </v-container>
       <v-container v-if="currentView.action">
-        2
-        <ActionCenter />
       </v-container>
       <v-container  v-if="currentView.applications">
-        3
-        <Applications />
+        <ApplicationsView />
       </v-container>
     </v-main>
   </v-layout>
@@ -31,11 +28,13 @@
 <script lang="ts">
 import Vue from 'vue';
 import NewView from './NewView.vue';
+import ApplicationsView from './ApplicationsView.vue';
 
 export default Vue.extend({
   name: 'LandingView',
   components: {
-    NewView
+    NewView,
+    ApplicationsView
   },
   data(){
     let currentView = {
