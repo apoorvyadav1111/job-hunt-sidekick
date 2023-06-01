@@ -34,10 +34,6 @@ app.use(
 	})
 );
 
-app.use('/home', async(req, res, next) => {
-	console.log('here')
-    res.send('Hello World')
-})
 
 app.use('/application', require('./routes/home'));
 app.use('/ddl', require('./routes/ddl'));

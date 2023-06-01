@@ -7,6 +7,9 @@ const jobApplicationSchema = new Schema(
         'applicationId' : {
             type: String
         }, 
+        'starred':{
+            type: Boolean
+        },
         'company' : {
             type: String
         }, 

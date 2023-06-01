@@ -13,7 +13,7 @@ export type InterviewStatus = 'OA'
 
 export type Status = BaseStatus | OAStatus | InterviewStatus;
 
-export type TaskStatus = 'IN PROGRESS' | 'DONE';
+export type TaskStatus = 'RECEIVED'|'IN PROGRESS' | 'DONE';
 
 export interface StatusLog{
   status: Status,
@@ -31,23 +31,38 @@ export type Tasks = Task[];
 export type StatusHistory = StatusLog[];
 
 export interface JobApplicationInfo{
+  starred: boolean,
   company: string,
   postingId?: string,
   stack?:string,
-  postingUrl?: URL,
-  dashboardUrl?: URL
+  postingUrl?: URL | string,
+  dashboardUrl?: URL | string
   referral?: string,
   note?: string,
-  recruiter?: string
-}
-
-export interface JobApplication extends JobApplicationInfo{
-  jobId: string
-  appliedDate: Date,
+  recruiter?: string,
   status:StatusHistory,
   pending: Tasks,
 }
 
+export interface JobApplication extends JobApplicationInfo{
+  _id: string
+  appliedDate: Date,
+
+}
+
+export interface JobApplicationPatch{
+  starred?: boolean,
+  company?: string,
+  postingId?: string,
+  stack?:string,
+  postingUrl?: URL | string,
+  dashboardUrl?: URL | string
+  referral?: string,
+  note?: string,
+  recruiter?: string,
+  status?:StatusHistory,
+  pending?: Tasks,
+}
 // const a:JobApplication = {
 //   company:'TCS',
 //   jobId:'R12',

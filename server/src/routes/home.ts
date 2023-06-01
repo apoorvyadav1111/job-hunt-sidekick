@@ -3,6 +3,9 @@ const homeController = require("../controllers/home");
 
 const router = express.Router();
 
+
+router.delete("/:jobId", homeController.deleteApplication);
+
 router.post("/", homeController.postApplication);
 
 router.get("/", homeController.getApplication);
