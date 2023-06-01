@@ -1,15 +1,16 @@
 <template>
     <v-card outlined class="ma-2 pa-6">
-        <v-card-text class="text-overline text-center">
-            <div style="font-size: large;">
+        <v-card-text  class="text-overline text-center">
+            <div  class="orange--text" style="font-size: large;">
                 Add a new job application
             </div>
         </v-card-text>
         <form>
-            <v-alert
-            v-if="message">
+            <v-dialog
+            v-model="message"
+            max-width="500px">
             {{ alert }}
-            </v-alert>
+            </v-dialog>
             <v-row>
                 <v-col>
                     <v-combobox
@@ -67,16 +68,33 @@
                 v-model="recruiter"
                 label="Recuiter Details"
             ></v-text-field>
-            <v-textarea
-                outlined
-                auto-grow
-                rows="1"
-                v-model="note"
-                name="Note"
-                label="Additional Note"
-            ></v-textarea>
+            <v-row>
+                <v-col cols="3">
+                    <v-checkbox
+                    v-model="starred"
+                    label="Mark as Starred"
+                    color="orange"
+                    hide-details
+                    ></v-checkbox>
+                </v-col>
+                <v-col>
+                    <v-textarea
+                        outlined
+                        auto-grow
+                        rows="1"
+                        v-model="note"
+                        name="Note"
+                        label="Additional Note"
+                    ></v-textarea>
+
+                </v-col>
+            </v-row>
+
+
             <v-btn
                 class="mr-4"
+                color="orange"
+                text
                 @click="submit"
                 >
                 submit
@@ -89,7 +107,7 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import { JobApplicationInfo, Status, StatusLog, Task } from "@/interfaces/jobapplication";
+import { JobApplicationInfo, StatusLog } from "@/interfaces/jobapplication";
 import { JobApplicationService } from '@/services/jobapplication_service';
 import { DDLService } from '@/services/ddl';
 
@@ -109,6 +127,7 @@ export default Vue.extend({
         let stackItems:string[] = [];
         let message = false;
         let alert = "";
+        let starred = false;
         return {
             company,
             stack,
@@ -121,7 +140,8 @@ export default Vue.extend({
             companyItems,
             stackItems,
             message,
-            alert
+            alert,
+            starred
         }
     },
     async created(){
@@ -137,6 +157,7 @@ export default Vue.extend({
                 updated: new Date()
             }
             let app:JobApplicationInfo = {
+                starred:this.starred,
                 company: this.company,
                 stack:this.stack,
                 postingId:this.postingId,
@@ -161,6 +182,7 @@ export default Vue.extend({
             this.createNewJobAppplication(app);
         },
         clear(){
+            this.starred = false;
             this.company = "";
             this.stack = "";
             this.postingId = "";
@@ -172,9 +194,8 @@ export default Vue.extend({
         },
         async createNewJobAppplication(formData:JobApplicationInfo){
             const resp = await new JobApplicationService().postApplication(formData);
-            this.message = true;
             this.alert = resp;
-            
+            this.message = true;
         }
 
     }

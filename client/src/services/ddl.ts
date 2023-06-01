@@ -1,4 +1,4 @@
-import { Status } from "@/interfaces/jobapplication";
+import { Status, TaskStatus } from "@/interfaces/jobapplication";
 import http from "./init"
 
 export class DDLService{
@@ -30,6 +30,15 @@ export class DDLService{
             , 'OA RECV' 
             , 'OA DONE'
             , 'OA'
+        ]
+        return data;
+    }
+
+    getPendingStatusDDL(){
+        const data: TaskStatus[] = [
+            'RECEIVED',
+            'IN PROGRESS',
+            'DONE'
         ]
         return data;
     }

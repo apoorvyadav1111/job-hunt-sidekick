@@ -3,10 +3,11 @@
     <v-app-bar app absolute color="#323232">
       <v-app-bar-title class="title" center><div>Sidekick</div></v-app-bar-title>
       <template>
-        <v-tabs align-with-title>
+        <v-tabs align-with-title color="orange">
         <v-tab @click="showNewView">Add New</v-tab>
         <v-tab @click="showActionCenterView">Action Center</v-tab>
         <v-tab @click="showApplicationsView">Applications</v-tab>
+        <v-tabs-slider color="orange"></v-tabs-slider>
       </v-tabs>
 
       </template>

@@ -1,4 +1,4 @@
-import { JobApplicationInfo } from "@/interfaces/jobapplication";
+import { JobApplicationInfo, JobApplicationPatch } from "@/interfaces/jobapplication";
 import http from "./init"
 
 export class JobApplicationService{
@@ -9,6 +9,16 @@ export class JobApplicationService{
     }
     async getApplication(){
         const resp = await http.get(this.base);
+        return resp.data;
+    }
+    async putApplication(id:string, patch:JobApplicationPatch){
+        const resp = await http.put(`${this.base}/${id}`,patch);
+        return resp.data;
+    }
+    async deleteApplication(id:string){
+        console.log(id);
+        const resp = await http.delete(`${this.base}/${id}`);
+        console.log(resp);
         return resp.data;
     }
 }
