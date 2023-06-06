@@ -9,7 +9,7 @@
 import Vue, { PropType } from "vue";
 import { StatusLog, StatusHistory } from "@/interfaces/jobapplication";
 export default Vue.extend({
-    name:'StatusComponenet',
+    name:'StatusComponent',
     props:{
         statusHistory:{
             required:true,

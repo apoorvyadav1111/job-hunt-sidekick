@@ -4,7 +4,7 @@
       align-top
       dense
     >  
-      <v-timeline-item color="success" small>
+      <v-timeline-item color="red" small>
       </v-timeline-item>
       <v-timeline-item
         v-for="(item, i) in items"
@@ -15,7 +15,7 @@
             {{ item.review }}
             {{  new Date(item.updated).toDateString()}}
       </v-timeline-item>
-      <v-timeline-item color="red" small>
+      <v-timeline-item color="success" small>
       </v-timeline-item>
     </v-timeline>
   </v-card>

@@ -15,6 +15,25 @@
             clearable
         >
         </v-text-field>
+        <v-row>
+            <v-col cols="3">
+                <v-checkbox
+                v-model="showStarred"
+                label="Show Only Starred"
+                color="orange"
+                @change="filterData"
+                ></v-checkbox>
+            </v-col>
+            <v-col>
+                <v-checkbox
+                v-model="showPending"
+                label="Show Only Pending"
+                color="red darken-3"
+                 @change="filterData"
+                ></v-checkbox>
+            </v-col>
+        </v-row>
+        <br />
         <v-data-table
             :items="data"
             :headers="headers"
@@ -43,8 +62,8 @@
                 </v-container>
                 
             </template>
-          <template v-slot:[`item.status`]="{item}">
-            <StatusComponenet @showStatusHistory="showStatusTimeLine" :statusHistory="item.status"/>
+            <template v-slot:[`item.status`]="{item}">
+            <StatusComponent @showStatusHistory="showStatusTimeLine" :statusHistory="item.status"/>
             <v-dialog 
                 v-model="statusDialog"
                 max-width="500px"
@@ -53,14 +72,13 @@
             </v-dialog>
           </template>
           <template v-slot:[`item.pending`]="{item}">
-            <v-container v-if="item.pending.length==0" @click="pendingDialog=!pendingDialog">
-                <!-- {{ item.pending[-1].status }} -->
-                NONE
+            <v-container v-if="item.pending.length>0">
+                <PendingComponent @showPendingHistory="showPendingTimeLine" :pendingHistory="item.pending"/>
                 <v-dialog 
                     v-model="pendingDialog"
                     max-width="500px"
                 >
-                    <PendingTimeline :items="item.pending"/>
+                    <PendingTimeline :items="pendingTimelineItem"/>
                 </v-dialog>
             </v-container>
           </template>
@@ -325,14 +343,11 @@
             </template>
             <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length">
-                    <v-card-text class="overline">Recruiter: </v-card-text>
-                    {{ item.recruiter }}
-                    <br />
-                    <v-card-text class="overline">Referral: </v-card-text>
-                    {{ item.referral }}
-                    <br />
-                    <v-card-text class="overline">Additional Notes: </v-card-text>
-                    {{ item.note }}
+                    <v-card-text class="overline">Recruiter: {{ item.recruiter }}</v-card-text>
+                    <v-card-text class="overline">Referral: {{ item.referral }}</v-card-text>
+                    <v-card-title class="overline">Additional Notes: </v-card-title>
+                    <v-card-text>{{ item.note }}</v-card-text>
+                    
                 </td>
             </template>
         </v-data-table>
@@ -342,21 +357,25 @@
 import Vue from 'vue';
 import { JobApplicationService } from '@/services/jobapplication_service';
 import { DDLService } from '@/services/ddl';
-import { JobApplication, JobApplicationPatch, Status, StatusHistory, TaskStatus } from '@/interfaces/jobapplication';
-import StatusComponenet from '@/components/Status.vue';
+import { JobApplication, JobApplicationPatch, Status, StatusHistory, TaskStatus, Tasks } from '@/interfaces/jobapplication';
 import StatusTimeline from '@/components/StatusTimeline.vue';
+import StatusComponent from '@/components/Status.vue';
+import PendingComponent from '@/components/Pending.vue';
+
 import PendingTimeline from '@/components/PendingTimeline.vue';
 export default Vue.extend({
     name:'ApplicationsView',
     components:{
-        StatusComponenet,
         StatusTimeline,
-        PendingTimeline
+        StatusComponent,
+        PendingTimeline,
+        PendingComponent
     },
     data(){
         let statusItems: Status[] =[];
         let pendingStatusItems: TaskStatus[] = [];
         let statusTimelineItem:StatusHistory = [];
+        let pendingTimelineItem:Tasks =[];
         let editedItem: JobApplication = {} as JobApplication;
         let newStatus: Status = 'APPLIED';
         let newReview = "";
@@ -364,25 +383,25 @@ export default Vue.extend({
         let newTaskStatus: TaskStatus = 'RECEIVED';
         let newTaskDetail = "";
         let newTaskDate:string = (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10);
-
+        let data: JobApplication[] = [] as JobApplication[];
         return {
             search:"",
-            data:[],
+            data,
             singleExpand:true,
             headers:[
-                {text:'Starred', value:'starred'},
-                {text:'Company', value:'company'},
-                {text:'Posting ID', value:'postingId'},
-                {text:'Stack', value:'stack'},
-                {text:'Posting Url', value:'postingUrl'},
-                {text:'Dashboard Url', value:'dashboardUrl'},
-                {text:'Pending', value:'pending'},
-                {text:'Status', value:'status'},
+                {text:'Starred', value:'starred', align:'center'},
+                {text:'Company', value:'company', align:'center'},
+                {text:'Posting ID', value:'postingId', align:'center'},
+                {text:'Stack', value:'stack', align:'center'},
+                {text:'Posting Url', value:'postingUrl', align:'center'},
+                {text:'Dashboard Url', value:'dashboardUrl', align:'center'},
+                {text:'Pending', value:'pending', align:'center'},
+                {text:'Status', value:'status', align:'center'},
                 // {text:'Recruiter', value:'recruiter'},
                 // {text:'Referral', value:'referral'},
                 // {text:'Note', value:'note'},
-                {text:'Applied', value:'appliedDate'},
-                { text: 'Actions', value: 'actions', sortable: false },
+                {text:'Applied', value:'appliedDate', align:'center'},
+                { text: 'Actions', value: 'actions', sortable: false , align:'center'},
                 { text: '', value: 'data-table-expand' },
             ],
             stackItems:[],
@@ -405,7 +424,10 @@ export default Vue.extend({
             addPendingForm:false,
             newTaskStatus,
             newTaskDetail,
-            newTaskDate
+            newTaskDate,
+            pendingTimelineItem,
+            showStarred:false,
+            showPending:false,
             
         }
     },
@@ -421,18 +443,38 @@ export default Vue.extend({
         async getAllData(){
             this.data = await new JobApplicationService().getApplication();
         },
+        async filterData(){
+            await this.getAllData();
+            if(this.showStarred===true){
+                this.data = this.data.filter(e=>e.starred);
+            }
+            if(this.showPending===true){
+                this.data = this.data.filter(e=>{
+                    if(e.pending.length>0 && e.pending[e.pending.length-1].status!=='DONE'){
+                        return true;
+                    }else{
+                        return false;
+                    }
+                })
+            }
+        },
         hideAllDialogs(){
             this.editDialog = false;
             this.deleteDialog = false;
             this.statusDialog = false;
             this.pendingDialog = false;
-            this.resetStatusForm();
+            this.resetEditForm();
         },
         showStatusTimeLine(items:StatusHistory){
             this.hideAllDialogs();
             this.statusDialog = true;
             this.statusTimelineItem = items;
 
+        },
+        showPendingTimeLine(items:Tasks){
+            this.hideAllDialogs();
+            this.pendingDialog = true;
+            this.pendingTimelineItem = items;
         },
         editItem(item:JobApplication){
             this.hideAllDialogs();
@@ -454,15 +496,22 @@ export default Vue.extend({
         close(){
             this.hideAllDialogs();
         },
-        resetStatusForm(){
+        resetEditForm(){
             this.newStatus = 'APPLIED';
             this.newReview = "";
             this.newStatusDate = (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10);
+            this.newTaskStatus= 'RECEIVED';
+            this.newTaskDetail = "";
+            this.newTaskDate= (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10);
+
         },
         async save(){
             this.overlay = true;
             if(this.addStatusForm===true){
                 this.editedItem.status.push({status:this.newStatus, review:this.newReview, updated:new Date(this.newStatusDate)});
+            }
+            if(this.addPendingForm===true){
+                this.editedItem.pending.push({task_detail:this.newTaskDetail, status:this.newTaskStatus, due_date:new Date(this.newTaskDate)});
             }
             const patch:JobApplicationPatch = this.editedItem;
             const resp:JobApplication = await new JobApplicationService().putApplication(this.editedItem._id, patch);
