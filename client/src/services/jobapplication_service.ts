@@ -16,9 +16,7 @@ export class JobApplicationService{
         return resp.data;
     }
     async deleteApplication(id:string){
-        console.log(id);
         const resp = await http.delete(`${this.base}/${id}`);
-        console.log(resp);
         return resp.data;
     }
 }
