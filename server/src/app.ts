@@ -9,6 +9,8 @@ const { MONGODB_URI, PORT, IP, SECRET_KEY } = require( './config');
 
 
 const app:Application = express();
+var cors = require('cors');
+app.use(cors());
 
 const store=new MongoDBStore({
 	uri: MONGODB_URI,
@@ -32,12 +34,10 @@ app.use(
 	})
 );
 
-app.use('/home', async(req, res, next) => {
-	console.log('here')
-    res.send('Hello World')
-})
 
-app.use('/', require('./routes/home'));
+app.use('/application', require('./routes/home'));
+app.use('/ddl', require('./routes/ddl'));
+
 
 
 
@@ -47,7 +47,6 @@ app.use((req:Request, res: Response, next: NextFunction) => {
 });
 
 app.use((error:any, req: Request, res: Response, next:NextFunction ) => {
-	console.log(error);
 	res.status(500).send('500: Internal Server Error');
 });
 
@@ -59,7 +58,7 @@ mongoose
 .connect(MONGODB_URI)
 .then(() => {
 	app.listen(PORT, IP, function () {
-		console.log('Server Started!!!');
+		console.log(`Server Started!!! at port ${PORT}`);
 	});
 })
 .catch((err:any) => console.log(err));
