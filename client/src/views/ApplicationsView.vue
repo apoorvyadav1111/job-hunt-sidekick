@@ -24,13 +24,24 @@
                 @change="filterData"
                 ></v-checkbox>
             </v-col>
-            <v-col>
+            <v-col cols="3">
                 <v-checkbox
                 v-model="showPending"
                 label="Show Only Pending"
                 color="red darken-3"
                  @change="filterData"
                 ></v-checkbox>
+            </v-col>
+            <v-col cols="4">
+
+            </v-col>
+            <v-col cols="2">
+                <v-btn class="mt-3" color="orange" text large>
+                    <v-icon>
+                    mdi mdi-database-refresh-outline
+                </v-icon>
+                Refresh Data
+                </v-btn>
             </v-col>
         </v-row>
         <br />
@@ -63,22 +74,24 @@
                 
             </template>
             <template v-slot:[`item.status`]="{item}">
-            <StatusComponent @showStatusHistory="showStatusTimeLine" :statusHistory="item.status"/>
+            <StatusComponent @showStatusHistory="showStatusTimeLine" :statusItem="item"/>
             <v-dialog 
                 v-model="statusDialog"
                 max-width="500px"
+                :retain-focus="false"
             >
-                <StatusTimeline :items="statusTimelineItem"/>
+                <StatusTimeline @refreshData="filterData" :id="statusTimelineItemId" :items="statusTimelineItem"/>
             </v-dialog>
           </template>
           <template v-slot:[`item.pending`]="{item}">
             <v-container v-if="item.pending.length>0">
-                <PendingComponent @showPendingHistory="showPendingTimeLine" :pendingHistory="item.pending"/>
+                <PendingComponent  @showPendingHistory="showPendingTimeLine" :pendingItem="item"/>
                 <v-dialog 
                     v-model="pendingDialog"
                     max-width="500px"
+                    :retain-focus="false"
                 >
-                    <PendingTimeline :items="pendingTimelineItem"/>
+                    <PendingTimeline @refreshData2="filterData" :id="pendingTimelineItemId" :items="pendingTimelineItem"/>
                 </v-dialog>
             </v-container>
           </template>
@@ -105,6 +118,9 @@
                             :items="companyItems"
                             label="Company Name"
                             required
+                            color="orange"
+                        item-color="orange"
+
                         ></v-combobox>
                     </v-col>
                     <v-col>
@@ -112,6 +128,8 @@
                             v-model="editedItem.postingId"
                             label="Job ID"
                             required
+                            color="orange"
+
                         ></v-text-field>
                     </v-col>
                 </v-row>
@@ -121,6 +139,8 @@
                         v-model="editedItem.postingUrl"
                         label="Job Posting Url"
                         required
+                        color="orange"
+
                         ></v-text-field>
                     </v-col>
                 </v-row>
@@ -129,6 +149,8 @@
                         <v-text-field
                             v-model="editedItem.dashboardUrl"
                             label="Dashboard URL"
+                            color="orange"
+
                         ></v-text-field>
                     </v-col>
                 </v-row>
@@ -139,12 +161,16 @@
                             :items="stackItems"
                             label="Stack"
                             required
+                            color="orange"
+                            item-color="orange"
                         ></v-combobox>
                     </v-col>
                     <v-col>
                         <v-text-field
                             v-model="editedItem.referral"
                             label="Referral"
+                            color="orange"
+
                             required
                         ></v-text-field>
                     </v-col>
@@ -158,6 +184,8 @@
                                 :items="statusItems"
                                 label="Status"
                                 required
+                            color="orange"
+                                item-color="orange"
                             ></v-select>
                         </v-col>
                         </v-row>
@@ -166,6 +194,8 @@
                             <v-text-field
                                 v-model="newReview"
                                 label="Review"
+                            color="orange"
+
                             ></v-text-field>
                         </v-col>
                         </v-row>
@@ -225,6 +255,9 @@
                                 :items="pendingStatusItems"
                                 label="Status"
                                 required
+                                item-color="orange"
+                            color="orange"
+
                             ></v-select>
                         </v-col>
                         </v-row>
@@ -233,6 +266,8 @@
                             <v-text-field
                                 v-model="newTaskDetail"
                                 label="Review"
+                            color="orange"
+
                             ></v-text-field>
                         </v-col>
                         </v-row>
@@ -285,6 +320,8 @@
                     <v-text-field
                         v-model="editedItem.recruiter"
                         label="Recuiter Details"
+                        color="orange"
+
                     ></v-text-field>
                     <v-textarea
                         outlined
@@ -292,6 +329,8 @@
                         rows="1"
                         v-model="editedItem.note"
                         name="Note"
+                        color="orange"
+
                         label="Additional Note"
                     ></v-textarea>
                 </v-container>
@@ -414,6 +453,7 @@ export default Vue.extend({
             pendingDialog:false,
             deleteDialog:false,
             statusTimelineItem,
+            statusTimelineItemId:"",
             editedItem,
             overlay:false,
             addStatusForm:false,
@@ -426,6 +466,7 @@ export default Vue.extend({
             newTaskDetail,
             newTaskDate,
             pendingTimelineItem,
+            pendingTimelineItemId:"",
             showStarred:false,
             showPending:false,
             
@@ -465,16 +506,18 @@ export default Vue.extend({
             this.pendingDialog = false;
             this.resetEditForm();
         },
-        showStatusTimeLine(items:StatusHistory){
+        showStatusTimeLine(items:StatusHistory, id:string){
             this.hideAllDialogs();
             this.statusDialog = true;
-            this.statusTimelineItem = items;
+            this.statusTimelineItem = items
+            this.statusTimelineItemId =  id;
 
         },
-        showPendingTimeLine(items:Tasks){
+        showPendingTimeLine(items:Tasks, id:string){
             this.hideAllDialogs();
             this.pendingDialog = true;
             this.pendingTimelineItem = items;
+            this.pendingTimelineItemId = id
         },
         editItem(item:JobApplication){
             this.hideAllDialogs();

@@ -18,6 +18,8 @@
                         :items="companyItems"
                         label="Company Name"
                         required
+                        color="orange"
+                        item-color="orange"
                     ></v-combobox>
                 </v-col>
                 <v-col>
@@ -25,6 +27,7 @@
                         v-model="postingId"
                         label="Job ID"
                         required
+                        color="orange"
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -34,6 +37,7 @@
                     v-model="jobUrl"
                     label="Job Posting Url"
                     required
+                    color="orange"
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -42,6 +46,7 @@
                     <v-text-field
                         v-model="dashboardUrl"
                         label="Dashboard URL"
+                        color="orange"
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -52,6 +57,9 @@
                         :items="stackItems"
                         label="Stack"
                         required
+                        color="orange"
+                        item-color="orange"
+
                     ></v-combobox>
                 </v-col>
                 <v-col>
@@ -59,6 +67,7 @@
                         v-model="referral"
                         label="Referral"
                         required
+                        color="orange"
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -67,6 +76,7 @@
             <v-text-field
                 v-model="recruiter"
                 label="Recuiter Details"
+                color="orange"
             ></v-text-field>
             <v-row>
                 <v-col cols="3">
@@ -85,6 +95,7 @@
                         v-model="note"
                         name="Note"
                         label="Additional Note"
+                        color="orange"
                     ></v-textarea>
 
                 </v-col>

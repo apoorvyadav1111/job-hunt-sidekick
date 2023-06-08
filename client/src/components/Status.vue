@@ -7,31 +7,34 @@
 </template>
 <script lang="ts">
 import Vue, { PropType } from "vue";
-import { StatusLog, StatusHistory } from "@/interfaces/jobapplication";
+import { StatusLog, StatusHistory, JobApplication } from "@/interfaces/jobapplication";
 export default Vue.extend({
     name:'StatusComponent',
     props:{
-        statusHistory:{
+        statusItem:{
             required:true,
-            type: Array as PropType<StatusHistory> 
+            type: Object as PropType<JobApplication> 
         }
     },
     created(){
-        this.items = this.statusHistory
+        this.items = this.statusItem.status
+        this.id = this.statusItem._id
         this.items.sort((a:StatusLog,b:StatusLog)=>new Date(a.updated).setHours(0, 0, 0, 0) - new Date(b.updated).setHours(0, 0, 0, 0))
         this.latest = this.items[this.items.length-1];
     },
     data(){
         let items:StatusHistory = [];
         let latest: StatusLog = {} as StatusLog;
+        let id = "";
         return {
             items,
             latest,
+            id
         }
     },
     methods:{
         showTimeline(){
-            this.$emit('showStatusHistory', this.items);
+            this.$emit('showStatusHistory', this.items, this.id);
         }
     }
 })
