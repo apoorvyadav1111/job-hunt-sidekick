@@ -3,10 +3,10 @@
     <v-app-bar app absolute color="#323232">
       <v-app-bar-title class="title" center><div>Sidekick</div></v-app-bar-title>
       <template>
-        <v-tabs align-with-title>
+        <v-tabs align-with-title color="orange">
         <v-tab @click="showNewView">Add New</v-tab>
-        <v-tab @click="showActionCenterView">Action Center</v-tab>
         <v-tab @click="showApplicationsView">Applications</v-tab>
+        <v-tabs-slider color="orange"></v-tabs-slider>
       </v-tabs>
 
       </template>
@@ -17,12 +17,9 @@
         <NewView />
       </v-container>
       <v-container v-if="currentView.action">
-        2
-        <ActionCenter />
       </v-container>
       <v-container  v-if="currentView.applications">
-        3
-        <Applications />
+        <ApplicationsView />
       </v-container>
     </v-main>
   </v-layout>
@@ -31,11 +28,13 @@
 <script lang="ts">
 import Vue from 'vue';
 import NewView from './NewView.vue';
+import ApplicationsView from './ApplicationsView.vue';
 
 export default Vue.extend({
   name: 'LandingView',
   components: {
-    NewView
+    NewView,
+    ApplicationsView
   },
   data(){
     let currentView = {
