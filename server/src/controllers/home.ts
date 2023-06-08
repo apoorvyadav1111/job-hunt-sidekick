@@ -7,18 +7,16 @@ exports.getApplication =async (req: Request,res: Response, next:NextFunction) =>
         const data = await JobApplication.find({});
         res.status(200).send(data);
     }catch(err){
-        console.log(err)
         res.status(400).send(err);
     }
 }
 
-exports.getDueApplication =async (req: Request,res: Response, next:NextFunction) => {
-    res.status(200).send('Get Due Application');
-}
+// exports.getDueApplication =async (req: Request,res: Response, next:NextFunction) => {
+//     res.status(200).send('Get Due Application');
+// }
 
 exports.putApplication =async (req: Request,res: Response, next:NextFunction) => {
     const { jobId } = req.params;
-
     try{
         const patch = req.body;
         if(patch.starred!==undefined){
@@ -31,7 +29,6 @@ exports.putApplication =async (req: Request,res: Response, next:NextFunction) =>
         const resp = await JobApplication.findOneAndUpdate({_id:jobId}, patch, updateOpts);
         res.status(200).send(resp);
     }catch(err){
-        console.log("here")
         res.status(400).send(err);
     }
 }
@@ -49,7 +46,6 @@ exports.postApplication = async (req: Request,res: Response, next:NextFunction) 
 
 exports.deleteApplication = async (req: Request,res: Response, next:NextFunction) => {
     const { jobId } = req.params;
-    console.log(req.params);
     try{
         await JobApplication.deleteOne({_id:jobId});
         res.status(200).send('done');

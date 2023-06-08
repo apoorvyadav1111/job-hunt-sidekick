@@ -12,6 +12,5 @@ router.get("/", homeController.getApplication);
 
 router.put("/:jobId", homeController.putApplication);
 
-router.get("/due", homeController.getDueApplication);
 
 module.exports = router;

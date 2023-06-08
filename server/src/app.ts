@@ -47,7 +47,6 @@ app.use((req:Request, res: Response, next: NextFunction) => {
 });
 
 app.use((error:any, req: Request, res: Response, next:NextFunction ) => {
-	console.log(error);
 	res.status(500).send('500: Internal Server Error');
 });
 
