@@ -126,11 +126,11 @@ export default Vue.extend({
     name:'NewView',
     components:{},
     data(){
-        let company = "TCS";
-        let stack = "SDE";
-        let postingId = "R1234";
-        let jobUrl = "google.com";
-        let dashboardUrl = "google.com";
+        let company = "";
+        let stack = "";
+        let postingId = "";
+        let jobUrl = "";
+        let dashboardUrl = "";
         let referral = "";
         let note = "";
         let recruiter = "";
@@ -161,7 +161,7 @@ export default Vue.extend({
         this.stackItems = await ddlServ.getStackDDL();
     },
     methods:{
-        submit(){
+        async submit(){
             const st:StatusLog = {
                 status:'APPLIED',
                 review:'Applied job on the website',
@@ -190,7 +190,8 @@ export default Vue.extend({
             }catch{
                 app.dashboardUrl = this.dashboardUrl;
             }
-            this.createNewJobAppplication(app);
+            await this.createNewJobAppplication(app);
+            this.clear();
         },
         clear(){
             this.starred = false;
