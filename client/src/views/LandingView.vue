@@ -1,7 +1,7 @@
 <template>
   <v-layout fluid>
     <v-app-bar app absolute color="#323232">
-      <v-app-bar-title class="title" center><div>Sidekick</div></v-app-bar-title>
+      <v-app-bar-title class="title" center><div>Job Hunt Sidekick</div></v-app-bar-title>
       <template>
         <v-tabs align-with-title color="orange">
         <v-tab @click="showNewView">Add New</v-tab>
