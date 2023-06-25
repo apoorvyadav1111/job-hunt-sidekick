@@ -1,10 +1,10 @@
 {
 	"env": {
-		"PORT": "3000",
+		"PORT": "2999",
 		"IP": "localhost",
 		"MONGODB_URI": "mongodb://localhost:27017/jobapplication",
 		"SECRET_KEY": "this_is_a_test",
 		"NODE_ENV": "Development",
-		"url": "http://localhost:3000"
+		"url": "http://localhost:2999"
 	}
 }

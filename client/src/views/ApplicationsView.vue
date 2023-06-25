@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container class='pa-6' fluid>
         <v-overlay v-if="overlay">
             <v-progress-circular
                 indeterminate
@@ -72,6 +72,12 @@
                     </v-icon>
                 </v-container>
                 
+            </template>
+            <!-- <template v-slot:[`item.postingUrl`]="{item}">
+                <a v-if="item.postingUrl!==''" :href="item.postingUrl" class="orange--text">Posting</a>
+            </template> -->
+            <template v-slot:[`item.dashboardUrl`]="{item}">
+                <a v-if="item.dashboardUrl!==''" :href="item.dashboardUrl" class="orange--text">Dashboard</a>
             </template>
             <template v-slot:[`item.status`]="{item}">
             <StatusComponent @showStatusHistory="showStatusTimeLine" :statusItem="item"/>
@@ -201,46 +207,14 @@
                         </v-row>
                         <v-row>
                             <v-col>
-                                <v-dialog
-                                    :retain-focus="false"
-                                    ref="dialog"
-                                    v-model="modal"
-                                    :return-value.sync="newStatusDate"
-                                    persistent
-                                    width="290px"
-                                >
-                                <template v-slot:activator="{ on, attrs }">
-                                <v-text-field
-                                    v-model="newStatusDate"
-                                    label="Status Date"
-                                    prepend-icon="mdi-calendar"
-                                    readonly
-                                    color="orange"
-                                    v-bind="attrs"
-                                    v-on="on"
-                                ></v-text-field>
-                                </template>
+                                <v-card-title class="text-overline">Status Update Date</v-card-title>
                                 <v-date-picker
                                 v-model="newStatusDate"
                                 color="orange"
                                 scrollable
+                                full-width
                                 >
-                                <v-spacer></v-spacer>
-                                <v-btn
-                                    text
-                                    @click="modal = false"
-                                >
-                                    Cancel
-                                </v-btn>
-                                <v-btn
-                                    text
-                                    color="orange"
-                                    @click="$refs.dialog.save(newStatusDate)"
-                                >
-                                    OK
-                                </v-btn>
                                 </v-date-picker>
-                            </v-dialog>
                         </v-col>
                         </v-row>
                         <v-icon color="red" v-if="addStatusForm" @click="addStatusForm = false">mdi-close</v-icon>
@@ -273,47 +247,15 @@
                         </v-row>
                         <v-row>
                             <v-col>
-                                <v-dialog
-                                    :retain-focus="false"
-                                    ref="dialogTask"
-                                    v-model="modal"
-                                    :return-value.sync="newTaskDate"
-                                    persistent
-                                    width="290px"
-                                >
-                                <template v-slot:activator="{ on, attrs }">
-                                <v-text-field
-                                    v-model="newTaskDate"
-                                    label="Pending Date"
-                                    prepend-icon="mdi-calendar"
-                                    readonly
-                                    color="orange"
-                                    v-bind="attrs"
-                                    v-on="on"
-                                ></v-text-field>
-                                </template>
+                                <v-card-title class="text-overline">Due Date</v-card-title>
                                 <v-date-picker
                                 v-model="newTaskDate"
                                 color="orange"
                                 scrollable
+                                full-width
                                 >
-                                <v-spacer></v-spacer>
-                                <v-btn
-                                    text
-                                    @click="modal = false"
-                                >
-                                    Cancel
-                                </v-btn>
-                                <v-btn
-                                    text
-                                    color="orange"
-                                    @click="$refs.dialogTask.save(newTaskDate)"
-                                >
-                                    OK
-                                </v-btn>
                                 </v-date-picker>
-                            </v-dialog>
-                        </v-col>
+                            </v-col>
                         </v-row>
                         <v-icon color="red" v-if="addPendingForm" @click="addPendingForm = false">mdi-close</v-icon>
                     </v-container>
@@ -382,6 +324,7 @@
             </template>
             <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length">
+                    <v-card-text class="overline"><a v-if="item.postingUrl!==''" :href="item.postingUrl" class="orange--text">Posting Page</a></v-card-text>
                     <v-card-text class="overline">Recruiter: {{ item.recruiter }}</v-card-text>
                     <v-card-text class="overline">Referral: {{ item.referral }}</v-card-text>
                     <v-card-title class="overline">Additional Notes: </v-card-title>
@@ -405,11 +348,11 @@ import PendingTimeline from '@/components/PendingTimeline.vue';
 export default Vue.extend({
     name:'ApplicationsView',
     components:{
-        StatusTimeline,
-        StatusComponent,
-        PendingTimeline,
-        PendingComponent
-    },
+    StatusTimeline,
+    StatusComponent,
+    PendingTimeline,
+    PendingComponent,
+},
     data(){
         let statusItems: Status[] =[];
         let pendingStatusItems: TaskStatus[] = [];
@@ -432,7 +375,7 @@ export default Vue.extend({
                 {text:'Company', value:'company', align:'center'},
                 {text:'Posting ID', value:'postingId', align:'center'},
                 {text:'Stack', value:'stack', align:'center'},
-                {text:'Posting Url', value:'postingUrl', align:'center'},
+                // {text:'Posting Url', value:'postingUrl', align:'center'},
                 {text:'Dashboard Url', value:'dashboardUrl', align:'center'},
                 {text:'Pending', value:'pending', align:'center'},
                 {text:'Status', value:'status', align:'center'},
@@ -559,6 +502,7 @@ export default Vue.extend({
             const patch:JobApplicationPatch = this.editedItem;
             const resp:JobApplication = await new JobApplicationService().putApplication(this.editedItem._id, patch);
             this.editedItem = resp;
+            this.getAllData();
             this.overlay = false;
             this.hideAllDialogs();
         },

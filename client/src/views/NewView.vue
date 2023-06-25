@@ -9,7 +9,7 @@
             <v-dialog
             v-model="message"
             max-width="500px">
-            {{ alert }}
+            <v-alert type="success" color="orange">{{ alert }}</v-alert>
             </v-dialog>
             <v-row>
                 <v-col>

@@ -1,7 +1,7 @@
 <template>
-    <v-card>
-            <v-btn @click="showTimeline" block text>
-                {{ latest.status }}
+    <v-card class="elevation-0">
+            <v-btn @click="showTimeline" block small text>
+                {{ latest.status }} {{  new Date(latest.updated).toDateString()}}
             </v-btn>
     </v-card>
 </template>

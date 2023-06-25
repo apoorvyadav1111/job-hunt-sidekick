@@ -16,11 +16,7 @@
       <v-container v-if="currentView.new">
         <NewView />
       </v-container>
-      <v-container v-if="currentView.action">
-      </v-container>
-      <v-container  v-if="currentView.applications">
-        <ApplicationsView />
-      </v-container>
+        <ApplicationsView v-if="currentView.applications" />
     </v-main>
   </v-layout>
 </template>

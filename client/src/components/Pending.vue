@@ -1,7 +1,7 @@
 <template>
-    <v-card>
-            <v-btn @click="showTimeline" block text>
-                {{ latest.status }}
+    <v-card class="elevation-0">
+            <v-btn @click="showTimeline" :color="color" text small>
+                {{ latest.status }} {{  new Date(latest.due_date).toDateString()}}
             </v-btn>
     </v-card>
 </template>
@@ -19,18 +19,20 @@ export default Vue.extend({
     created(){
         this.items = this.pendingItem.pending
         this.id = this.pendingItem._id
-        // this.items.sort((a:StatusLog,b:StatusLog)=>new Date(a.updated).setHours(0, 0, 0, 0) - new Date(b.updated).setHours(0, 0, 0, 0))
-
         this.latest = this.items[this.items.length-1];
+        let today = (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10);
+        this.color = (new Date((new Date(this.latest.due_date).getTime()) - (new Date()).getTimezoneOffset() * 60000).toISOString().slice(0,10)<=today && this.latest.status!=='DONE')?'red':'white';
     },
     data(){
         let items:Tasks= [];
         let latest:Task= {} as Task;
         let id = "";
+        let color = "white";
         return {
             items,
             latest,
-            id
+            id,
+            color,
         }
     },
     methods:{
