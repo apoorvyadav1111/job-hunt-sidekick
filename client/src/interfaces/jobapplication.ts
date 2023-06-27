@@ -1,4 +1,4 @@
-export type BaseStatus = 'APPLIED' | 'IN REVIEW' | 'ACCEPTED' | 'OFFER LETTER RECEIVED';
+export type BaseStatus = 'APPLIED' | 'IN REVIEW' | 'ACCEPTED' | 'OFFER LETTER RECEIVED' |'REJECTED' ;
 export type OAStatus = 'OA RECV' | 'OA DONE';
 export type InterviewStatus = 'OA' 
   | 'OA PASSED' 

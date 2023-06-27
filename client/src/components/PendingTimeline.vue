@@ -39,7 +39,7 @@
         ></v-text-field>
         </v-col>
       </v-row>
-            {{  new Date(item.due_date).toDateString()}}
+            {{  item.due_date.toString().slice(0,10) }}
       </v-timeline-item>
       <v-timeline-item color="red" small>
       </v-timeline-item>

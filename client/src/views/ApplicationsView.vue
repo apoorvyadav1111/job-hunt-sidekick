@@ -32,7 +32,15 @@
                  @change="filterData"
                 ></v-checkbox>
             </v-col>
-            <v-col cols="4">
+            <v-col cols="3">
+                <v-checkbox
+                v-model="hideRejected"
+                label="Hide Rejected"
+                color="red darken-3"
+                 @change="filterData"
+                ></v-checkbox>
+            </v-col>
+            <v-col cols="1">
 
             </v-col>
             <v-col cols="2">
@@ -412,11 +420,12 @@ export default Vue.extend({
             pendingTimelineItemId:"",
             showStarred:false,
             showPending:false,
+            hideRejected:true,
             
         }
     },
     async created(){
-        this.getAllData();
+        this.filterData();
         const serv = new DDLService();
         this.statusItems = serv.getStatusDDL();
         this.stackItems = await serv.getStackDDL();
@@ -435,6 +444,15 @@ export default Vue.extend({
             if(this.showPending===true){
                 this.data = this.data.filter(e=>{
                     if(e.pending.length>0 && e.pending[e.pending.length-1].status!=='DONE'){
+                        return true;
+                    }else{
+                        return false;
+                    }
+                })
+            }
+            if(this.hideRejected===true){
+                this.data = this.data.filter(e=>{
+                    if(e.status.length>0 && e.status[e.status.length-1].status!=='REJECTED'){
                         return true;
                     }else{
                         return false;

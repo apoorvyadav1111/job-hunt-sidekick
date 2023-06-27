@@ -1,7 +1,7 @@
 <template>
     <v-card class="elevation-0">
             <v-btn @click="showTimeline" :color="color" text small>
-                {{ latest.status }} {{  new Date(latest.due_date).toDateString()}}
+                {{ latest.status }} {{  latest.due_date.toString().slice(0,10)}}
             </v-btn>
     </v-card>
 </template>
@@ -19,6 +19,7 @@ export default Vue.extend({
     created(){
         this.items = this.pendingItem.pending
         this.id = this.pendingItem._id
+        this.items.sort((a:Task,b:Task)=> a.due_date<b.due_date?0:1)
         this.latest = this.items[this.items.length-1];
         let today = (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10);
         this.color = (new Date((new Date(this.latest.due_date).getTime()) - (new Date()).getTimezoneOffset() * 60000).toISOString().slice(0,10)<=today && this.latest.status!=='DONE')?'red':'white';

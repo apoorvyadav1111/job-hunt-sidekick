@@ -156,11 +156,14 @@ export default Vue.extend({
         }
     },
     async created(){
-        const ddlServ = new DDLService();
-        this.companyItems = await ddlServ.getCompanyDDL();
-        this.stackItems = await ddlServ.getStackDDL();
+        await this.getDDLs();
     },
     methods:{
+        async getDDLs(){
+            const ddlServ = new DDLService();
+            this.companyItems = await ddlServ.getCompanyDDL();
+            this.stackItems = await ddlServ.getStackDDL();
+        },
         async submit(){
             const st:StatusLog = {
                 status:'APPLIED',
@@ -206,6 +209,7 @@ export default Vue.extend({
         },
         async createNewJobAppplication(formData:JobApplicationInfo){
             const resp = await new JobApplicationService().postApplication(formData);
+            await this.getDDLs();
             this.alert = resp;
             this.message = true;
         }

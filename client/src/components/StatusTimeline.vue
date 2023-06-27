@@ -40,7 +40,7 @@
         ></v-text-field>
         </v-col>
       </v-row>
-        {{  new Date(item.updated).toDateString()}}
+        {{  item.updated.toString().slice(0,10)}}
       </v-timeline-item>
       <v-timeline-item color="success" small>
       </v-timeline-item>

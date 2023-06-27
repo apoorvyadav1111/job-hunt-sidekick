@@ -30,6 +30,7 @@ export class DDLService{
             , 'OA RECV' 
             , 'OA DONE'
             , 'OA'
+            , 'REJECTED'
         ]
         return data;
     }
