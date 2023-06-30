@@ -1,5 +1,5 @@
 <template>
-    <v-container class='pa-6' fluid>
+    <v-container :key="render" class='pa-6' fluid>
         <v-overlay v-if="overlay">
             <v-progress-circular
                 indeterminate
@@ -44,7 +44,7 @@
 
             </v-col>
             <v-col cols="2">
-                <v-btn class="mt-3" color="orange" text large>
+                <v-btn class="mt-3" @click="renderAgain" color="orange" text large>
                     <v-icon>
                     mdi mdi-database-refresh-outline
                 </v-icon>
@@ -53,12 +53,27 @@
             </v-col>
         </v-row>
         <br />
+        <v-dialog 
+                v-model="statusDialog"
+                max-width="500px"
+                :retain-focus="false"
+            >
+                <StatusTimeline @refreshData="filterData" :id="statusTimelineItemId" :items="statusTimelineItem"/>
+        </v-dialog>
+        <v-dialog 
+                    v-model="pendingDialog"
+                    max-width="500px"
+                    :retain-focus="false"
+                >
+                    <PendingTimeline @refreshData2="filterData" :id="pendingTimelineItemId" :items="pendingTimelineItem"/>
+                </v-dialog>
         <v-data-table
             :items="data"
             :headers="headers"
             item-key="_id"
             :search="search"
             class="elevation-1"
+            :options="tableOptions"
             :footer-props="{
                 showFirstLastPage: true,
                 firstIcon: 'mdi-arrow-collapse-left',
@@ -81,32 +96,15 @@
                 </v-container>
                 
             </template>
-            <!-- <template v-slot:[`item.postingUrl`]="{item}">
-                <a v-if="item.postingUrl!==''" :href="item.postingUrl" class="orange--text">Posting</a>
-            </template> -->
             <template v-slot:[`item.dashboardUrl`]="{item}">
                 <a v-if="item.dashboardUrl!==''" :href="item.dashboardUrl" class="orange--text">Dashboard</a>
             </template>
             <template v-slot:[`item.status`]="{item}">
-            <StatusComponent @showStatusHistory="showStatusTimeLine" :statusItem="item"/>
-            <v-dialog 
-                v-model="statusDialog"
-                max-width="500px"
-                :retain-focus="false"
-            >
-                <StatusTimeline @refreshData="filterData" :id="statusTimelineItemId" :items="statusTimelineItem"/>
-            </v-dialog>
-          </template>
-          <template v-slot:[`item.pending`]="{item}">
+                <StatusComponent @showStatusHistory="showStatusTimeLine" :statusItem="item"/>
+            </template>
+            <template v-slot:[`item.pending`]="{item}">
             <v-container v-if="item.pending.length>0">
                 <PendingComponent  @showPendingHistory="showPendingTimeLine" :pendingItem="item"/>
-                <v-dialog 
-                    v-model="pendingDialog"
-                    max-width="500px"
-                    :retain-focus="false"
-                >
-                    <PendingTimeline @refreshData2="filterData" :id="pendingTimelineItemId" :items="pendingTimelineItem"/>
-                </v-dialog>
             </v-container>
           </template>
           <template v-slot:[`item.appliedDate`]="{item}">
@@ -354,7 +352,7 @@ import PendingComponent from '@/components/Pending.vue';
 
 import PendingTimeline from '@/components/PendingTimeline.vue';
 export default Vue.extend({
-    name:'ApplicationsView',
+    name:'ApplicationsViewNew',
     components:{
     StatusTimeline,
     StatusComponent,
@@ -383,17 +381,16 @@ export default Vue.extend({
                 {text:'Company', value:'company', align:'center'},
                 {text:'Posting ID', value:'postingId', align:'center'},
                 {text:'Stack', value:'stack', align:'center'},
-                // {text:'Posting Url', value:'postingUrl', align:'center'},
                 {text:'Dashboard Url', value:'dashboardUrl', align:'center'},
                 {text:'Pending', value:'pending', align:'center'},
                 {text:'Status', value:'status', align:'center'},
-                // {text:'Recruiter', value:'recruiter'},
-                // {text:'Referral', value:'referral'},
-                // {text:'Note', value:'note'},
                 {text:'Applied', value:'appliedDate', align:'center'},
                 { text: 'Actions', value: 'actions', sortable: false , align:'center'},
                 { text: '', value: 'data-table-expand' },
             ],
+            tableOptions:{
+                itemsPerPage: 100,
+            }, 
             stackItems:[],
             statusItems,
             pendingStatusItems,
@@ -421,7 +418,7 @@ export default Vue.extend({
             showStarred:false,
             showPending:false,
             hideRejected:true,
-            
+            render:0
         }
     },
     async created(){
@@ -519,6 +516,7 @@ export default Vue.extend({
             }
             const patch:JobApplicationPatch = this.editedItem;
             const resp:JobApplication = await new JobApplicationService().putApplication(this.editedItem._id, patch);
+            this.renderAgain();
             this.filterData();
             this.overlay = false;
             this.hideAllDialogs();
@@ -527,6 +525,10 @@ export default Vue.extend({
             this.hideAllDialogs();
             await new JobApplicationService().deleteApplication(this.editedItem._id);
             this.filterData();
+        },
+        renderAgain(){
+            this.hideAllDialogs();
+            this.render = (this.render+1)%10;
         }
     }
 })

@@ -5,6 +5,7 @@
       <template>
         <v-tabs align-with-title color="orange">
         <v-tab @click="showNewView">Add New</v-tab>
+        <v-tab @click="showApplicationsV2View">Applications V2</v-tab>
         <v-tab @click="showApplicationsView">Applications</v-tab>
         <v-tabs-slider color="orange"></v-tabs-slider>
       </v-tabs>
@@ -16,7 +17,8 @@
       <v-container v-if="currentView.new">
         <NewView />
       </v-container>
-        <ApplicationsView v-if="currentView.applications" />
+        <ApplicationsViewNew v-if="currentView.applicationsv2" />
+        <!-- <ApplicationsView v-if="currentView.applications" /> -->
     </v-main>
   </v-layout>
 </template>
@@ -25,18 +27,22 @@
 import Vue from 'vue';
 import NewView from './NewView.vue';
 import ApplicationsView from './ApplicationsView.vue';
+import ApplicationsViewNew from './ApplicationsViewNew.vue';
+
 
 export default Vue.extend({
   name: 'LandingView',
   components: {
     NewView,
-    ApplicationsView
+    // ApplicationsView,
+    ApplicationsViewNew
   },
   data(){
     let currentView = {
       action:false,
       new:true,
       applications:false,
+      applicationsv2:false,
     }
     return {
       currentView
@@ -47,6 +53,7 @@ export default Vue.extend({
       this.currentView.action = false;
       this.currentView.new = false;
       this.currentView.applications = false;
+      this.currentView.applicationsv2 = false;
     },
     showNewView(){
       this.resetAllViews();
@@ -59,6 +66,10 @@ export default Vue.extend({
     showApplicationsView(){
       this.resetAllViews();
       this.currentView.applications = true;
+    },
+    showApplicationsV2View(){
+      this.resetAllViews();
+      this.currentView.applicationsv2 = true;
     }
 
 
