@@ -66,52 +66,8 @@
                     :retain-focus="false"
                 >
                     <PendingTimeline @refreshData2="filterData" :id="pendingTimelineItemId" :items="pendingTimelineItem"/>
-                </v-dialog>
-        <v-data-table
-            :items="data"
-            :headers="headers"
-            item-key="_id"
-            :search="search"
-            class="elevation-1"
-            :options="tableOptions"
-            :footer-props="{
-                showFirstLastPage: true,
-                firstIcon: 'mdi-arrow-collapse-left',
-                lastIcon: 'mdi-arrow-collapse-right',
-                prevIcon: 'mdi-minus',
-                nextIcon: 'mdi-plus'
-            }"
-            :expanded.sync="expanded"
-            :single-expand="singleExpand"
-            show-expand
-        > 
-            <template v-slot:[`item.starred`]="{item}">
-                <v-container @click="starApplication(item)">
-                    <v-icon color="orange" v-if="item.starred">
-                    mdi mdi-star
-                    </v-icon>
-                    <v-icon v-if="!item.starred">
-                        mdi mdi-star-outline
-                    </v-icon>
-                </v-container>
-                
-            </template>
-            <template v-slot:[`item.dashboardUrl`]="{item}">
-                <a v-if="item.dashboardUrl!==''" :href="item.dashboardUrl" class="orange--text">Dashboard</a>
-            </template>
-            <template v-slot:[`item.status`]="{item}">
-                <StatusComponent @showStatusHistory="showStatusTimeLine" :statusItem="item"/>
-            </template>
-            <template v-slot:[`item.pending`]="{item}">
-            <v-container v-if="item.pending.length>0">
-                <PendingComponent  @showPendingHistory="showPendingTimeLine" :pendingItem="item"/>
-            </v-container>
-          </template>
-          <template v-slot:[`item.appliedDate`]="{item}">
-            {{  new Date(item.appliedDate).toDateString()}}
-          </template>
-          <template v-slot:[`item.actions`]="{ item }">
-            <v-dialog
+        </v-dialog>
+        <v-dialog
                 v-model="editDialog"
                 :retain-focus="false"
                 max-width="500px"
@@ -312,6 +268,50 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+        <v-data-table
+            :items="data"
+            :headers="headers"
+            item-key="_id"
+            :search="search"
+            class="elevation-1"
+            :options="tableOptions"
+            :footer-props="{
+                showFirstLastPage: true,
+                firstIcon: 'mdi-arrow-collapse-left',
+                lastIcon: 'mdi-arrow-collapse-right',
+                prevIcon: 'mdi-minus',
+                nextIcon: 'mdi-plus'
+            }"
+            :expanded.sync="expanded"
+            :single-expand="singleExpand"
+            show-expand
+        > 
+            <template v-slot:[`item.starred`]="{item}">
+                <v-container @click="starApplication(item)">
+                    <v-icon color="orange" v-if="item.starred">
+                    mdi mdi-star
+                    </v-icon>
+                    <v-icon v-if="!item.starred">
+                        mdi mdi-star-outline
+                    </v-icon>
+                </v-container>
+                
+            </template>
+            <template v-slot:[`item.dashboardUrl`]="{item}">
+                <a v-if="item.dashboardUrl!==''" :href="item.dashboardUrl" class="orange--text">Dashboard</a>
+            </template>
+            <template v-slot:[`item.status`]="{item}">
+                <StatusComponent @showStatusHistory="showStatusTimeLine" :statusItem="item"/>
+            </template>
+            <template v-slot:[`item.pending`]="{item}">
+            <v-container v-if="item.pending.length>0">
+                <PendingComponent  @showPendingHistory="showPendingTimeLine" :pendingItem="item"/>
+            </v-container>
+          </template>
+          <template v-slot:[`item.appliedDate`]="{item}">
+            {{  new Date(item.appliedDate).toDateString()}}
+          </template>
+          <template v-slot:[`item.actions`]="{ item }">
             <v-icon
                 small
                 color="orange"
@@ -334,8 +334,7 @@
                     <v-card-text class="overline">Recruiter: {{ item.recruiter }}</v-card-text>
                     <v-card-text class="overline">Referral: {{ item.referral }}</v-card-text>
                     <v-card-title class="overline">Additional Notes: </v-card-title>
-                    <v-card-text>{{ item.note }}</v-card-text>
-                    
+                    <v-card-text>{{ item.note }}</v-card-text>  
                 </td>
             </template>
         </v-data-table>

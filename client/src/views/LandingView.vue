@@ -6,7 +6,7 @@
         <v-tabs align-with-title color="orange">
         <v-tab @click="showNewView">Add New</v-tab>
         <v-tab @click="showApplicationsV2View">Applications V2</v-tab>
-        <v-tab @click="showApplicationsView">Applications</v-tab>
+        <!-- <v-tab @click="showApplicationsView">Applications</v-tab> -->
         <v-tabs-slider color="orange"></v-tabs-slider>
       </v-tabs>
 
