@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 const session = require('express-session');
 const MongoDBStore=require('connect-mongodb-session')(session);
 const useragent = require( 'express-useragent');
-const { MONGODB_URI, PORT, IP, SECRET_KEY } = require( './config');
+const { MONGODB_URI, PORT, SECRET_KEY } = require( './config');
 
 
 const app:Application = express();
@@ -34,7 +34,10 @@ app.use(
 	})
 );
 
-
+app.get('/health', async (req:Request, res:Response) => {
+	console.log('health check');
+	res.status(200).send('OK');
+});
 app.use('/application', require('./routes/home'));
 app.use('/ddl', require('./routes/ddl'));
 
@@ -57,7 +60,7 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 mongoose
 .connect(MONGODB_URI)
 .then(() => {
-	app.listen(PORT, IP, function () {
+	app.listen(PORT, function () {
 		console.log(`Server Started!!! at port ${PORT}`);
 	});
 })

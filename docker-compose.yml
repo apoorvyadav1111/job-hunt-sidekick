@@ -1,0 +1,43 @@
+version: '1.1'
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    image: job-hunt-server
+    container_name: job-hunt-server
+    command: npm run start
+    volumes:
+      - ./server:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 2999:2999
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo
+    container_name: job-hunt-mongo
+    volumes:
+      - data-volume:/data/db
+    ports:
+      - 27017:27017
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    image: job-hunt-client
+    container_name: job-hunt-client
+    command: npm run serve
+    volumes:
+      - ./client:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - server
+    ports:
+      - 8081:8080
+
+volumes:
+  data-volume:
+  node_modules:
+  web-root:
+    driver: local

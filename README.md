@@ -12,7 +12,19 @@ Stack Used:
 Functionalities && Use Case:
 We can use excel for saving our progress. However, this app allows you to quickly search and have CRUD operations readily available. We can track progress of the job application easily along with pending tasks such as OA. Allows us to keep track of starred application and applications having pending items. With autocomplete feature, it allows adding a new application as fast as adding it to an excel file.
 
-## Steps to Run
+## NEW: Run using docker
+1. Clone the repo
+2. Install docker
+3. Run the following command
+```
+docker-compose build
+docker-compose up
+```
+4. Go to localhost:8081 to access the application
+5. Enjoy! and ensure you dont delete the data-volume in docker. You can take backup of the data-volume if you want to. Or if you are familiar with docker, you can make changes to the docker-compose file accordingly.
+
+
+## Steps to Run without docker
 
 1. Clone the repo
 2. Install npm 

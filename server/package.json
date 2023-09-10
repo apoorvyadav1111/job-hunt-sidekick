@@ -6,6 +6,7 @@
   "scripts": {
     "start": "nodemon ./dist/app.js",
     "watch": "tsc --watch",
+    "build": "npx tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Apoorv Yadav",
