@@ -12,6 +12,15 @@ Stack Used:
 Functionalities && Use Case:
 We can use excel for saving our progress. However, this app allows you to quickly search and have CRUD operations readily available. We can track progress of the job application easily along with pending tasks such as OA. Allows us to keep track of starred application and applications having pending items. With autocomplete feature, it allows adding a new application as fast as adding it to an excel file.
 
+## NEW: Run via Docker
+1. Clone the repo
+2. Install docker
+3. Checkout the branch dockerize-app
+```
+git checkout dockerize-app
+```
+4. Follow further instructions in the README.md of the branch
+
 ## Steps to Run
 
 1. Clone the repo
